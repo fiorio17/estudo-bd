@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Guia completo de Banco de Dados II: modelagem relacional, orientação a objetos e bancos de dados temporais.">
+  <title>Guia de revisão — Banco de Dados II</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🗄️%3C/text%3E%3C/svg%3E">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;}
+    body{margin:0;}
+    img,svg,video{max-width:100%;height:auto;}
+    button,input,select,textarea{font:inherit;color:inherit;}
+    table{border-collapse:collapse;}
+  </style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --amber:#A65A0B; --amber-soft:#F7E6D2;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+  --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+    --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+    --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+    --amber:#E7A45C; --amber-soft:#3A2A18;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+  --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+  --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+  --amber:#E7A45C; --amber-soft:#3A2A18;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="light"]{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --amber:#A65A0B; --amber-soft:#F7E6D2;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16.5px; line-height:1.62;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 28px);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1180px; margin:0 auto; padding:0 20px 96px;}
+
+.masthead{padding:56px 0 28px; border-bottom:2px solid var(--ink); margin-bottom:34px;}
+.eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 14px;}
+h1{font-family:var(--display); font-weight:700; font-size:clamp(2.3rem,6vw,3.6rem);
+  line-height:1.04; letter-spacing:-.02em; margin:0 0 16px; text-wrap:balance;}
+h1 em{font-style:italic; color:var(--accent);}
+.lede{font-size:1.1rem; color:var(--ink-soft); max-width:60ch; margin:0;}
+
+.priority{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  margin:30px 0 0; padding:0; list-style:none;}
+.priority li{background:var(--surface); border:1px solid var(--line); border-radius:3px;
+  padding:14px 16px; box-shadow:var(--shadow);}
+.priority b{display:block; font-family:var(--mono); font-size:.7rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--accent); margin-bottom:5px;}
+.priority span{font-size:.93rem; color:var(--ink-soft); line-height:1.5;}
+
+.shell{display:grid; grid-template-columns:210px minmax(0,1fr); gap:46px; align-items:start;}
+@media (max-width:900px){ .shell{grid-template-columns:1fr; gap:0;} nav.rail{display:none;} }
+
+nav.rail{position:sticky; top:24px; font-size:.87rem;}
+nav.rail p{font-family:var(--mono); font-size:.68rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 10px;}
+nav.rail a{display:block; padding:5px 0 5px 12px; color:var(--ink-soft); text-decoration:none;
+  border-left:2px solid var(--line); transition:color .15s, border-color .15s;}
+nav.rail a:hover, nav.rail a:focus-visible{color:var(--accent); border-left-color:var(--accent);}
+nav.rail hr{border:0; border-top:1px solid var(--line); margin:12px 0;}
+
+main{min-width:0;}
+section{margin:0 0 60px; scroll-margin-top:24px;}
+.prose{max-width:68ch;}
+
+h2{font-family:var(--display); font-size:clamp(1.55rem,3.3vw,2.05rem); line-height:1.15;
+  letter-spacing:-.015em; margin:0 0 6px; text-wrap:balance;}
+h2 .num{font-family:var(--mono); font-size:.8rem; color:var(--accent); letter-spacing:.1em;
+  display:block; margin-bottom:8px; font-weight:400;}
+h3{font-family:var(--display); font-size:1.22rem; margin:34px 0 8px; letter-spacing:-.01em;}
+h4{font-size:.98rem; margin:22px 0 6px; letter-spacing:.005em;}
+p{margin:0 0 14px;}
+a{color:var(--accent);}
+ul,ol{margin:0 0 14px; padding-left:22px;}
+li{margin-bottom:7px;}
+strong{font-weight:650;}
+code{font-family:var(--mono); font-size:.87em; background:var(--surface-2); padding:.12em .36em; border-radius:2px;}
+
+.callout{background:var(--surface); border:1px solid var(--line); border-radius:3px;
+  padding:16px 18px; margin:22px 0; box-shadow:var(--shadow);}
+.callout p:last-child{margin-bottom:0;}
+.callout .tag{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:7px;}
+.callout.warn .tag{color:var(--amber);}
+
+.formula{font-family:var(--mono); font-size:1.02rem; background:var(--surface); border:1px solid var(--line);
+  padding:14px 18px; border-radius:3px; margin:16px 0; overflow-x:auto; white-space:nowrap;}
+
+.scroller{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:3px; background:var(--surface);}
+table{border-collapse:collapse; width:100%; font-size:.91rem; min-width:480px;}
+th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+thead th{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); background:var(--surface-2); white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+td.num, th.num{font-family:var(--mono); font-variant-numeric:tabular-nums;}
+
+pre{font-family:var(--mono); font-size:.83rem; line-height:1.6; background:var(--surface);
+  border:1px solid var(--line); border-radius:3px; padding:16px 18px; overflow-x:auto; margin:16px 0;
+  box-shadow:var(--shadow);}
+pre b{color:var(--accent); font-weight:600;}
+pre i{color:var(--ink-soft); font-style:normal;}
+
+.chain{font-family:var(--mono); font-size:.95rem; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:3px; padding:10px 14px; margin:10px 0; display:inline-block;}
+.chain b{color:var(--accent);}
+
+.cards{display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); margin-top:20px;}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:0;
+  box-shadow:var(--shadow); overflow:hidden;}
+.card button{width:100%; text-align:left; background:none; border:0; padding:14px 16px; color:var(--ink);
+  font-size:.95rem; font-weight:600; line-height:1.45; display:flex; gap:10px; align-items:flex-start; cursor:pointer;}
+.card button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+.card button::before{content:"?"; font-family:var(--mono); color:var(--accent); font-weight:700; flex:none;}
+.card .ans{padding:0 16px 15px 32px; font-size:.9rem; color:var(--ink-soft); display:none;}
+.card.open .ans{display:block;}
+.card .ans code{font-size:.85em;}
+
+footer{margin-top:60px; padding-top:22px; border-top:1px solid var(--line); font-size:.85rem; color:var(--ink-soft);}
+footer a{color:var(--accent);}
+</style>
+
+<div class="page">
+
+<header class="masthead">
+  <p class="eyebrow">Revisão para a prova · Banco de Dados II · Prof. Leonardo Sápiras</p>
+  <h1>Três assuntos, <em>uma prova</em>.</h1>
+  <p class="lede">Modelagem relacional, orientação a objetos e bancos de dados temporais — os três temas do formulário de revisão, condensados a partir dos slides da disciplina.</p>
+
+  <ul class="priority">
+    <li><b>Modelagem relacional</b><span>Codd, chaves, dependência funcional, integridade, operadores, as 12 regras.</span></li>
+    <li><b>Orientação a objetos</b><span>Classe, objeto, herança, encapsulamento — e bancos de dados orientados a objetos.</span></li>
+    <li><b>Bancos temporais</b><span>Tempo de transação x validade x bitemporal, versionamento, PostgreSQL.</span></li>
+  </ul>
+</header>
+
+<div class="shell">
+
+<nav class="rail" aria-label="Sumário">
+  <p>Sumário</p>
+  <a href="#hierarquia">Hierarquia dos modelos</a>
+  <a href="#abstracao">Níveis de abstração</a>
+  <a href="#relacional">Modelo relacional</a>
+  <a href="#chaves">Chaves e dependência</a>
+  <a href="#integridade">Regras de integridade</a>
+  <a href="#operadores">Operadores e relacionamentos</a>
+  <a href="#codd">As regras de Codd</a>
+  <hr>
+  <a href="#oo">Orientação a objetos</a>
+  <a href="#bdoo">Bancos de dados OO</a>
+  <hr>
+  <a href="#temporais">Bancos temporais</a>
+  <a href="#tipos-tempo">Tipos de tempo</a>
+  <a href="#sql-temporal">SQL temporal</a>
+  <hr>
+  <a href="#autoteste">Autoteste</a>
+</nav>
+
+<main>
+
+<!-- ============ MODELAGEM RELACIONAL ============ -->
+<section id="hierarquia">
+  <h2><span class="num">Parte 1 · Modelagem</span>Hierarquia dos modelos de dados</h2>
+  <div class="prose">
+    <p>Os modelos de dados evoluíram buscando mais <strong>semântica</strong> — mais capacidade de representar significado, e não só estrutura. A ordem, do menos ao mais semântico:</p>
+    <div class="chain"><b>Sistemas de arquivos</b> → Hierárquico → Relacional → Entidade-relacionamento → Semântico → Orientado a objetos → Relacional estendido (objeto/relacional)</div>
+    <p class="callout"><span class="tag">Fonte</span>Adaptado de Rob e Coronel (2016, p. 48). O relacional estendido (também chamado objeto-relacional) fica no topo por juntar a robustez do modelo relacional com conceitos de objetos.</p>
+  </div>
+</section>
+
+<section id="abstracao">
+  <h2>Níveis de abstração</h2>
+  <div class="prose">
+    <p>Um mesmo banco é enxergado de formas diferentes dependendo de quem olha. Da aula (Rob e Coronel, 2016, p. 56):</p>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Modelo</th><th>Nível de abstração</th><th>Foco</th><th>Independência</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Externo</strong></td><td>Alto</td><td>Visões dos usuários finais</td><td>Hardware e software</td></tr>
+        <tr><td><strong>Conceitual</strong></td><td>Razoavelmente alto</td><td>Visão global dos dados</td><td>Hardware e software</td></tr>
+        <tr><td><strong>Interno</strong></td><td>Razoavelmente baixo</td><td>Modelo específico de banco de dados</td><td>Dependente de software · independente de hardware</td></tr>
+        <tr><td><strong>Físico</strong></td><td>Baixo</td><td>Métodos de armazenamento e acesso</td><td>Dependente de software e hardware</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p class="callout warn"><span class="tag">Pegadinha comum</span>Do externo para o físico o nível de abstração <strong>cai</strong> e a dependência de hardware <strong>sobe</strong>. O conceitual é o único totalmente independente de um SGBD específico — é o nível do diagrama entidade-relacionamento.</p>
+  </div>
+</section>
+
+<section id="relacional">
+  <h2>O modelo relacional</h2>
+  <div class="prose">
+    <p>Idealizado por <strong>Edgar Frank Codd</strong>, pesquisador da IBM, em <strong>1970</strong>, no artigo <em>"A Relational Model of Data for Large Shared Databanks"</em>.</p>
+    <p>Princípios: os dados são organizados em <strong>tabelas</strong> (relações), compostas por <strong>linhas</strong> (tuplas) e <strong>colunas</strong> (atributos).</p>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Nome</th><th>Planeta</th><th>Raça</th></tr></thead>
+      <tbody>
+        <tr><td>Sylvester Stallone</td><td>Terra</td><td>Humano</td></tr>
+        <tr><td>Goku</td><td>Vegeta</td><td>Saiyajin</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <ul>
+      <li>Cada <strong>linha</strong> (tupla) é uma ocorrência única de entidade no conjunto.</li>
+      <li>Cada <strong>coluna</strong> representa um atributo e tem nome próprio; todos os valores de uma coluna respeitam o mesmo <strong>domínio</strong>.</li>
+      <li>Cada interseção linha × coluna é um <strong>único valor</strong>.</li>
+      <li>A <strong>ordem</strong> das linhas e colunas não importa para o SGBD.</li>
+      <li>Toda tabela precisa de um atributo (ou combinação) que identifique <strong>exclusivamente</strong> cada linha.</li>
+    </ul>
+    <p class="callout"><span class="tag">Fonte</span>Rob e Coronel (2011, p. 68).</p>
+  </div>
+</section>
+
+<section id="chaves">
+  <h3 style="margin-top:0">Dependência funcional</h3>
+  <div class="prose">
+    <p>Uma <strong>chave</strong> é um atributo (ou conjunto de atributos) que <strong>determina</strong> outros atributos.</p>
+  </div>
+  <div class="formula">CPF → Nome, Data de nascimento</div>
+  <div class="prose">
+    <p><strong>Princípio da determinação funcional:</strong> <code>A → B</code> significa que cada valor de A determina um, e somente um, valor de B — B é <strong>funcionalmente dependente</strong> de A.</p>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Horas concluídas</th><th>Classificação</th></tr></thead>
+      <tbody>
+        <tr><td>Menos de 30</td><td>Calouro</td></tr>
+        <tr><td>30–59</td><td>Segundo ano</td></tr>
+        <tr><td>60–89</td><td>Terceiro ano</td></tr>
+        <tr><td>90 ou mais</td><td>Quarto ano</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p><strong>Dependência funcional completa</strong>, com chave composta: se <code>D</code> depende de <code>(A,B,C)</code> mas <strong>não</strong> de nenhum subconjunto próprio dessa chave, então <code>D</code> tem dependência funcional completa em relação a <code>(A,B,C)</code>.</p>
+    <p class="callout"><span class="tag">Fonte</span>Rob e Coronel (2011, p. 71).</p>
+  </div>
+
+  <h3>Tipos de chave</h3>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Chave</th><th>Definição</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Super chave</strong></td><td>Atributo (simples ou composto) que identifica uma tupla.</td></tr>
+        <tr><td><strong>Chave candidata</strong></td><td>Super chave mínima (irredutível) — nenhum subconjunto dela também é super chave.</td></tr>
+        <tr><td><strong>Chave primária</strong></td><td>Chave candidata escolhida para identificar a tupla. <strong>Não pode ser nula.</strong></td></tr>
+        <tr><td><strong>Chave secundária</strong></td><td>Atributo (simples ou composto) usado para <strong>recuperação</strong> de dados.</td></tr>
+        <tr><td><strong>Chave estrangeira</strong></td><td>Atributo que coincide com atributos de outra tabela. <strong>Pode ser nula.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="integridade">
+  <h2>Regras de integridade</h2>
+  <div class="prose">
+    <p><strong>Integridade de entidade:</strong> todos os valores de chave primária são únicos e não podem ser nulos. <em>Exemplo: nenhuma pessoa pode ser cadastrada sem CPF.</em></p>
+    <p><strong>Integridade referencial:</strong> uma chave estrangeira pode ser nula, desde que não faça parte da chave primária daquela tabela. Todo valor <strong>não nulo</strong> de chave estrangeira deve referenciar um valor de chave primária <strong>existente</strong> — senão a referência "aponta para o nada".</p>
+  </div>
+</section>
+
+<section id="operadores">
+  <h2>Operadores e relacionamentos</h2>
+  <div class="prose">
+    <p>Operadores do conjunto relacional: <strong>união</strong>, <strong>interseção</strong>, <strong>diferença</strong>, <strong>produto</strong>, <strong>junção</strong> e <strong>divisão</strong>, além de dois que costumam ser confundidos:</p>
+    <ul>
+      <li><strong>Seleção</strong> — recorta <em>algumas linhas</em> da tabela (filtro por condição).</li>
+      <li><strong>Projeção</strong> — recorta <em>algumas colunas</em>, mantendo todos os valores dessas colunas.</li>
+    </ul>
+    <h3>Relacionamentos</h3>
+    <ul>
+      <li><strong>1:1</strong> um para um — uma pessoa possui um CPF.</li>
+      <li><strong>1:M</strong> um para muitos — uma casa tem muitos quartos.</li>
+      <li><strong>M:N</strong> muitos para muitos — disciplinas possuem muitos alunos, e alunos cursam muitas disciplinas.</li>
+    </ul>
+    <h3>Índices</h3>
+    <p>Pergunta da aula: se uma tabela tem 1 bilhão de registros, qual a forma mais eficiente de achar um registro específico? Resposta: <strong>índices</strong> — estruturas que evitam varrer a tabela inteira linha por linha.</p>
+  </div>
+</section>
+
+<section id="codd">
+  <h2>As regras de Codd</h2>
+  <div class="prose">
+    <p>Critérios que definem o que é, de fato, um SGBD relacional (Rob e Coronel, 2011, p. 99). Não é preciso decorar o número de cada regra, mas reconhecer o conteúdo:</p>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Regra</th><th>Ideia central</th></tr></thead>
+      <tbody>
+        <tr><td>Informação</td><td>Todo dado é representado como valor de coluna, em linha, dentro de tabelas.</td></tr>
+        <tr><td>Garantia de acesso</td><td>Todo valor é acessível via tabela + chave primária + coluna.</td></tr>
+        <tr><td>Valores nulos</td><td>Nulos são tratados de modo sistemático, independente do tipo de dado.</td></tr>
+        <tr><td>Catálogo dinâmico</td><td>Metadados são armazenados e consultados como dados comuns, via linguagem relacional.</td></tr>
+        <tr><td>Sublinguagem de dados</td><td>Deve existir uma linguagem <strong>declarativa</strong> única para definição, manipulação, integridade, autorização e transações.</td></tr>
+        <tr><td>Atualização de visualização</td><td>Toda visão atualizável deve poder ser atualizada pelo próprio sistema.</td></tr>
+        <tr><td>Inclusão/alteração/exclusão de alto nível</td><td>Suporte à manipulação de dados como conjunto, não só linha a linha.</td></tr>
+        <tr><td>Independência física</td><td>Mudar o armazenamento físico não afeta aplicações.</td></tr>
+        <tr><td>Independência lógica</td><td>Mudanças de estrutura que preservam os valores (nova coluna, reordenar) não afetam aplicações.</td></tr>
+        <tr><td>Independência de integridade</td><td>Regras de integridade ficam no catálogo do sistema, não no nível da aplicação.</td></tr>
+        <tr><td>Independência de distribuição</td><td>Usuários e aplicativos não sabem (nem precisam saber) onde os dados estão fisicamente.</td></tr>
+        <tr><td>Não transposição de regras</td><td>Mesmo com acesso de baixo nível, as regras de integridade não podem ser burladas.</td></tr>
+        <tr><td>Regra zero</td><td>Para ser relacional, o SGBD deve gerenciar os dados <strong>exclusivamente</strong> por recursos relacionais.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ ORIENTAÇÃO A OBJETOS ============ -->
+<section id="oo">
+  <h2><span class="num">Parte 2 · Objetos</span>Orientação a objetos</h2>
+  <div class="prose">
+    <p>Paradigma que surgiu nos <strong>anos 80</strong>, quando tipos primitivos e estruturas simples deixaram de ser suficientes para as necessidades dos desenvolvedores. Um programa passa a ser uma <strong>coleção de objetos</strong> que trocam <strong>mensagens</strong> entre si — e essa troca altera o estado de cada objeto.</p>
+    <p>A vantagem central é <strong>mapear o mundo real em software</strong>: um objeto <code>Pessoa</code> tem atributos (altura, peso, cor dos olhos) e comportamentos (caminhar, falar, escrever).</p>
+    <h3>Elementos-chave</h3>
+    <ul>
+      <li><strong>Herança</strong></li>
+      <li><strong>Tipos de dados abstratos</strong></li>
+      <li><strong>Vinculação dinâmica</strong> de chamadas de métodos</li>
+    </ul>
+    <h3>Conceitos</h3>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Conceito</th><th>O que é</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Classe</strong></td><td>Declaração de um tipo abstrato que encapsula constantes, variáveis e métodos. Pode ter subclasses.</td></tr>
+        <tr><td><strong>Objeto</strong></td><td>Instância de uma classe: tem um conjunto de operações (métodos) encapsuladas e um <strong>estado</strong>, determinado pelos valores de seus atributos.</td></tr>
+        <tr><td><strong>Classes abstratas</strong></td><td>Fornecem apenas a estrutura (nomes de métodos e atributos) sem implementação — os métodos têm só a <strong>assinatura</strong>. <strong>Não podem ser instanciadas.</strong></td></tr>
+        <tr><td><strong>Classes concretas</strong></td><td>Implementam os métodos e <strong>podem</strong> ser instanciadas.</td></tr>
+        <tr><td><strong>Herança</strong></td><td>Um objeto herda atributos e métodos de outro.</td></tr>
+        <tr><td><strong>Polimorfismo</strong></td><td>Mesma mensagem/método se comporta de formas diferentes conforme o objeto que a recebe.</td></tr>
+        <tr><td><strong>Interfaces</strong></td><td>Contrato de métodos que uma classe se compromete a implementar.</td></tr>
+        <tr><td><strong>Encapsulamento</strong></td><td>Esconder o estado interno do objeto, expondo-o só pelos métodos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p><strong>Mensagem</strong> é a chamada de um método. <strong>Construtores e destrutores</strong> são métodos especiais executados, respectivamente, quando um objeto é instanciado ou destruído.</p>
+    <p><strong>Atributos</strong> se dividem em: <strong>atributo de objeto</strong> (dado individual de cada instância) e <strong>atributo de classe</strong> (dado compartilhado entre todos os objetos da mesma classe).</p>
+    <h3>Visibilidade</h3>
+    <ul>
+      <li><strong>Public</strong> — acessível de qualquer lugar.</li>
+      <li><strong>Protected</strong> — acessível pela própria classe e suas subclasses.</li>
+      <li><strong>Private</strong> — acessível só dentro da própria classe.</li>
+    </ul>
+    <h3>Herança múltipla</h3>
+    <p>Linguagens como <strong>C++</strong> permitem que um objeto herde de dois ou mais objetos. Linguagens como <strong>Java não permitem</strong> herança múltipla de classes (só de interfaces).</p>
+  </div>
+</section>
+
+<section id="bdoo">
+  <h2>Bancos de dados orientados a objetos</h2>
+  <div class="prose">
+    <p>Pergunta motivadora: como persistir objetos do código em um banco relacional? Em vez de converter objetos em tabelas, por que não guardar os objetos <strong>diretamente</strong>? Resposta: um <strong>banco de dados orientado a objetos</strong> — um SGBD que armazena as informações como objetos, do mesmo jeito que são usados em linguagens OO.</p>
+    <h3>Comparação com o banco relacional</h3>
+    <p>Sistema de biblioteca, com tabelas <code>Livros</code>, <code>Autores</code>, <code>Editoras</code>:</p>
+    <ul>
+      <li><strong>Banco relacional</strong> — para buscar os autores de um livro, é preciso <strong>join</strong> entre tabelas.</li>
+      <li><strong>Banco orientado a objetos</strong> — uma classe <code>Livro</code> contém diretamente um objeto <code>Autor</code> e um objeto <code>Editora</code>. Acessa-se o autor com <code>livro.autor.nome</code>, <strong>sem join</strong>.</li>
+    </ul>
+    <div class="callout">
+      <span class="tag">Vantagens</span>
+      <p>Alinhamento natural com a programação orientada a objetos · reduz complexidade do código (menos mapeamento objeto-tabela) · melhor para dados ricos e complexos · boa performance quando os objetos estão muito interligados.</p>
+    </div>
+    <div class="callout warn">
+      <span class="tag">Desvantagens</span>
+      <p>Pouca padronização — não existe uma linguagem única para objetos, como o SQL é para o relacional · menor popularidade, menos ferramentas e suporte · dificuldade de integração com sistemas legados que usam SQL · em muitos casos, bancos relacionais ou NoSQL são mais eficientes.</p>
+    </div>
+    <h3>Exemplos de SGBD orientado a objetos</h3>
+    <ul>
+      <li><strong>db4o</strong> — para Java e .NET.</li>
+      <li><strong>ObjectDB</strong> — banco comercial para Java.</li>
+      <li><strong>Versant Object Database</strong> — usado em aplicações corporativas.</li>
+      <li><strong>GemStone/S</strong> — voltado para Smalltalk.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ BANCOS DE DADOS TEMPORAIS ============ -->
+<section id="temporais">
+  <h2><span class="num">Parte 3 · Tempo</span>Bancos de dados temporais</h2>
+  <div class="prose">
+    <p>Bancos de dados tradicionais armazenam apenas o <strong>estado atual</strong>. Para análises históricas e previsões, é preciso registrar informação junto ao fator <strong>tempo</strong> — recuperando dados do passado e planejando cenários futuros.</p>
+    <p>Um banco de dados temporal registra informações associadas ao tempo, permite acompanhar mudanças e históricos completos, suporta consultas por intervalo e validade temporal, e cada registro pode ter um atributo temporal associado. <em>Exemplo: o salário de um funcionário em diferentes anos.</em></p>
+    <div class="callout"><span class="tag">Vantagens</span><p>Histórico completo e rastreável · consultas sobre o passado e projeções futuras · suporte a auditorias e conformidade regulatória.</p></div>
+    <div class="callout warn"><span class="tag">Desvantagens</span><p>Aumento do volume de dados · maior complexidade nas consultas · nem todos os SGBDs suportam nativamente.</p></div>
+  </div>
+</section>
+
+<section id="tipos-tempo">
+  <h3 style="margin-top:0">Tipos de tempo</h3>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Tipo</th><th>O que representa</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tempo de transação</strong></td><td>Quando o dado foi registrado no banco — o momento de inserção ou alteração. Usado para auditoria e controle de alterações.</td></tr>
+        <tr><td><strong>Tempo de validade</strong></td><td>O período em que a informação é <strong>verdadeira no mundo real</strong>. <em>Exemplo: contrato válido de 01/01/2020 a 31/12/2022.</em> Permite consultas históricas reais.</td></tr>
+        <tr><td><strong>Tempo bitemporal</strong></td><td>Combina transação e validade — visão completa da evolução dos dados, essencial para auditorias detalhadas.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Características</h3>
+    <ul>
+      <li><strong>Armazenamento de histórico</strong> — mantém versões passadas, não só o estado atual; permite consultar "como era" em determinado momento.</li>
+      <li><strong>Dimensão temporal</strong> — associa datas ou intervalos de validade aos registros.</li>
+      <li><strong>Versionamento automático</strong> — alterações não sobrescrevem valores anteriores; cada versão fica registrada com sua validade.</li>
+      <li><strong>Consistência temporal</strong> — deve garantir integridade em relação ao tempo (ex.: não permitir intervalos sobrepostos em certos contextos).</li>
+      <li><strong>Auditoria e rastreabilidade</strong> — permite verificar quem alterou, quando e o quê; crítico em áreas reguladas (financeiro, jurídico, saúde).</li>
+      <li><strong>Maior volume de dados</strong> — manter histórico tende a armazenar muito mais informação que um banco convencional.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sql-temporal">
+  <h2>Consultas temporais na prática</h2>
+  <div class="prose">
+    <p>Consultas temporais usam operadores específicos — por exemplo, encontrar dados válidos em certa data. Alguns SGBDs oferecem recursos SQL dedicados. No PostgreSQL, a extensão <code>temporal_tables</code> versiona automaticamente uma tabela.</p>
+  </div>
+  <pre><i>-- Criar a tabela de funcionários</i>
+<b>CREATE TABLE</b> funcionario (
+    id SERIAL <b>PRIMARY KEY</b>,
+    nome TEXT,
+    salario NUMERIC
+);
+
+<i>-- Ativar o versionamento temporal</i>
+<b>SELECT</b> create_history_table('funcionario', 'funcionario_hist');</pre>
+  <pre><i>-- Qual era o salário de João em 01/01/2022?</i>
+<b>SELECT</b> nome, salario
+<b>FROM</b> funcionario_hist
+<b>WHERE</b> nome = 'João' <b>AND</b>
+tstzrange(val_period_start, val_period_end) @&gt; TIMESTAMP '2022-01-01';</pre>
+  <pre><i>-- Todas as versões de salário de João, em ordem</i>
+<b>SELECT</b> nome, salario, val_period_start, val_period_end
+<b>FROM</b> funcionario_hist
+<b>WHERE</b> nome = 'João'
+<b>ORDER BY</b> val_period_start;</pre>
+  <div class="prose">
+    <p class="callout warn"><span class="tag">Atenção</span>O operador <code>@&gt;</code> testa se o intervalo <code>tstzrange(...)</code> "contém" o instante informado. A tabela de histórico guarda uma linha por <strong>período de validade</strong>, não uma por alteração isolada de coluna.</p>
+    <h3>Cenários de utilização</h3>
+    <ul>
+      <li><strong>RH</strong> — histórico salarial, cargos ocupados, benefícios ativos em determinada época.</li>
+      <li><strong>Finanças</strong> — transações e saldos ao longo do tempo, reconciliação, auditoria de movimentações.</li>
+      <li><strong>IoT</strong> — séries temporais de sensores, análise de tendências, identificação de anomalias.</li>
+    </ul>
+    <h3>SGBDs com suporte temporal</h3>
+    <ul>
+      <li><strong>Oracle</strong> — Flashback.</li>
+      <li><strong>SQL Server</strong> — System-Versioned Tables.</li>
+      <li><strong>PostgreSQL</strong> — extensões (como <code>temporal_tables</code>).</li>
+      <li><strong>DB2</strong> — suporte bitemporal.</li>
+      <li><strong>TimescaleDB</strong> — séries temporais.</li>
+      <li><strong>InfluxDB</strong> — NoSQL temporal.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ AUTOTESTE ============ -->
+<section id="autoteste">
+  <h2><span class="num">Último passo</span>Autoteste</h2>
+  <div class="prose"><p>Responda em voz alta antes de clicar. Se travar em alguma, volte na seção correspondente.</p></div>
+
+  <div class="cards" id="cards">
+    <div class="card"><button type="button">Quem idealizou o modelo relacional, onde e quando?</button>
+      <div class="ans">Edgar Frank Codd, pesquisador da IBM, em 1970, no artigo "A Relational Model of Data for Large Shared Databanks".</div></div>
+
+    <div class="card"><button type="button">Diferença entre chave candidata e chave primária?</button>
+      <div class="ans">Chave candidata é qualquer super chave mínima (irredutível) capaz de identificar a tupla. Chave primária é a chave candidata <em>escolhida</em> para esse papel — e não pode ser nula.</div></div>
+
+    <div class="card"><button type="button">O que diz a regra de integridade referencial?</button>
+      <div class="ans">Uma chave estrangeira pode ser nula (se não fizer parte da chave primária da tabela), mas todo valor não nulo dela precisa referenciar um valor de chave primária que exista de fato.</div></div>
+
+    <div class="card"><button type="button">Diferença entre seleção e projeção?</button>
+      <div class="ans">Seleção filtra linhas (algumas ocorrências). Projeção filtra colunas (alguns atributos), mantendo todos os valores dessas colunas.</div></div>
+
+    <div class="card"><button type="button">Qual é a "regra zero" de Codd?</button>
+      <div class="ans">Para um SGBD ser considerado relacional, ele precisa gerenciar os dados exclusivamente por meio de recursos relacionais — é a base sobre a qual todas as outras regras se apoiam.</div></div>
+
+    <div class="card"><button type="button">O que torna um objeto diferente de uma classe?</button>
+      <div class="ans">Classe é a declaração de um tipo abstrato (estrutura, atributos, métodos). Objeto é uma instância concreta dessa classe, com um estado próprio definido pelos valores de seus atributos.</div></div>
+
+    <div class="card"><button type="button">Por que uma classe abstrata não pode ser instanciada?</button>
+      <div class="ans">Porque ela só define a estrutura — nomes de métodos e atributos — sem implementar o corpo dos métodos (só a assinatura). Só classes concretas, com os métodos implementados, podem virar objetos.</div></div>
+
+    <div class="card"><button type="button">Java permite herança múltipla de classes?</button>
+      <div class="ans">Não. Linguagens como C++ permitem que um objeto herde de duas ou mais classes; Java não permite esse tipo de herança (embora permita implementar múltiplas interfaces).</div></div>
+
+    <div class="card"><button type="button">Qual a vantagem central de um banco de dados orientado a objetos sobre o relacional?</button>
+      <div class="ans">Persistir os objetos diretamente, sem convertê-los em tabelas. Isso elimina o join para acessar dados relacionados: em vez de juntar tabelas Livro/Autor, acessa-se livro.autor.nome diretamente.</div></div>
+
+    <div class="card"><button type="button">Qual a maior desvantagem prática dos bancos OO frente ao relacional?</button>
+      <div class="ans">Falta de padronização: não existe uma linguagem universal para bancos orientados a objetos como o SQL é para o relacional — o que reduz ferramentas, suporte e facilidade de integração com sistemas legados.</div></div>
+
+    <div class="card"><button type="button">Qual a diferença entre tempo de transação e tempo de validade?</button>
+      <div class="ans">Tempo de transação é quando o dado foi registrado no banco (momento de persistência, usado para auditoria). Tempo de validade é o período em que a informação é verdadeira no mundo real, independente de quando foi digitada.</div></div>
+
+    <div class="card"><button type="button">O que é tempo bitemporal?</button>
+      <div class="ans">A combinação de tempo de transação e tempo de validade — permite saber tanto o que era verdade em determinada época quanto o que o sistema "sabia" e quando passou a saber, essencial para auditorias detalhadas.</div></div>
+
+    <div class="card"><button type="button">Por que "versionamento automático" é uma característica central de BD temporal?</button>
+      <div class="ans">Porque alterações nos dados não sobrescrevem os valores anteriores — cada versão permanece registrada com sua própria validade temporal, permitindo reconstruir o histórico completo.</div></div>
+
+    <div class="card"><button type="button">Se uma tabela tem 1 bilhão de registros, qual a forma mais eficiente de achar um específico?</button>
+      <div class="ans">Índices — estruturas de acesso que evitam varrer a tabela inteira linha por linha.</div></div>
+
+    <div class="card"><button type="button">Cite três SGBDs (ou extensões) com suporte temporal e o que cada um oferece.</button>
+      <div class="ans">Oracle (Flashback), SQL Server (System-Versioned Tables), PostgreSQL (extensões como temporal_tables), DB2 (suporte bitemporal), TimescaleDB e InfluxDB (séries temporais/NoSQL temporal).</div></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <p>Fonte principal: ROB, Peter; CORONEL, Carlos. <em>Sistemas de Banco de Dados</em>. Cengage Learning. Slides da disciplina Banco de Dados II, Prof. Leonardo Sápiras.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var cardBtns = document.querySelectorAll("#cards .card button");
+  for (var b=0;b<cardBtns.length;b++){
+    cardBtns[b].addEventListener("click", function(){
+      this.parentNode.classList.toggle("open");
+    });
+  }
+})();
+</script>
+<script src="theme.js" defer></script>
+</body>
+</html>

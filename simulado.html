@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Simulado de Banco de Dados II com questoes objetivas corrigidas na hora, cobrindo modelagem relacional, orientacao a objetos e bancos temporais.">
+  <title>Simulado — Banco de Dados II</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E📝%3C/text%3E%3C/svg%3E">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;}
+    body{margin:0;}
+    img,svg,video{max-width:100%;height:auto;}
+    button,input,select,textarea{font:inherit;color:inherit;}
+    table{border-collapse:collapse;}
+  </style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --amber:#A65A0B; --amber-soft:#F7E6D2;
+  --ok:#1B6B49; --ok-soft:#DCEFE4; --bad:#A32741; --bad-soft:#F7DDE3;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+  --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+    --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+    --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+    --amber:#E7A45C; --amber-soft:#3A2A18;
+    --ok:#5FD3A0; --ok-soft:#173327; --bad:#F2879E; --bad-soft:#3A1822;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+  --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+  --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+  --amber:#E7A45C; --amber-soft:#3A2A18;
+  --ok:#5FD3A0; --ok-soft:#173327; --bad:#F2879E; --bad-soft:#3A1822;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="light"]{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --amber:#A65A0B; --amber-soft:#F7E6D2;
+  --ok:#1B6B49; --ok-soft:#DCEFE4; --bad:#A32741; --bad-soft:#F7DDE3;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16.5px; line-height:1.6;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 28px);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:780px; margin:0 auto; padding:0 20px 90px;}
+
+.masthead{padding:52px 0 24px; border-bottom:2px solid var(--ink); margin-bottom:8px;}
+.eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 12px;}
+h1{font-family:var(--display); font-weight:700; font-size:clamp(2.1rem,5.5vw,3.2rem);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 14px; text-wrap:balance;}
+h1 em{font-style:italic; color:var(--accent);}
+.lede{font-size:1.05rem; color:var(--ink-soft); margin:0; max-width:58ch;}
+
+.scorebar{position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--line); padding:11px 0 10px; margin-bottom:30px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+.track{flex:1; min-width:150px; height:5px; background:var(--surface-2); border-radius:3px; overflow:hidden;}
+.track span{display:block; height:100%; width:0; background:var(--accent); transition:width .3s;}
+@media (prefers-reduced-motion:reduce){ .track span{transition:none;} }
+.tally{font-family:var(--mono); font-size:.78rem; letter-spacing:.06em; color:var(--ink-soft);
+  font-variant-numeric:tabular-nums; white-space:nowrap;}
+.tally b{color:var(--ink);}
+.tally .hit{color:var(--ok);} .tally .miss{color:var(--bad);}
+
+.parte{font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); margin:46px 0 4px; padding-top:8px;}
+.parte:first-of-type{margin-top:26px;}
+h2{font-family:var(--display); font-size:1.5rem; letter-spacing:-.012em; margin:0 0 6px;}
+.parte-sub{color:var(--ink-soft); font-size:.92rem; margin:0 0 20px;}
+
+.q{background:var(--surface); border:1px solid var(--line); border-radius:4px;
+  padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-num{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; color:var(--ink-soft);
+  text-transform:uppercase; display:block; margin-bottom:9px;}
+.q-num .kind{color:var(--accent);}
+.stem{margin:0 0 15px; font-size:1rem;}
+.stem code, .opt code, .why code{font-family:var(--mono); font-size:.87em;
+  background:var(--surface-2); padding:.1em .34em; border-radius:2px;}
+.stem strong{font-weight:650;}
+
+.graph{font-family:var(--mono); font-size:.82rem; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:3px; padding:12px 14px; margin:0 0 15px; overflow-x:auto; line-height:1.75;}
+.graph b{color:var(--accent);}
+
+.opts{display:grid; gap:7px;}
+.opt{display:flex; gap:11px; align-items:flex-start; width:100%; text-align:left;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:3px;
+  padding:11px 13px; font-family:inherit; font-size:.94rem; line-height:1.5; color:var(--ink);
+  cursor:pointer; transition:border-color .15s, background .15s;}
+.opt:hover:not(:disabled){border-color:var(--accent);}
+.opt:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.opt:disabled{cursor:default;}
+.opt .letra{font-family:var(--mono); font-size:.76rem; font-weight:700; color:var(--ink-soft);
+  border:1px solid var(--line); border-radius:2px; width:21px; height:21px; flex:none;
+  display:flex; align-items:center; justify-content:center; margin-top:1px; background:var(--surface);}
+.opt.certa{background:var(--ok-soft); border-color:var(--ok);}
+.opt.certa .letra{background:var(--ok); border-color:var(--ok); color:var(--surface);}
+.opt.errada{background:var(--bad-soft); border-color:var(--bad);}
+.opt.errada .letra{background:var(--bad); border-color:var(--bad); color:var(--surface);}
+
+.why{margin:13px 0 0; padding:13px 15px; border-radius:3px; font-size:.92rem;
+  background:var(--surface-2); border:1px solid var(--line); display:none;}
+.q.resolvida .why{display:block;}
+.why .verdict{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+  display:block; margin-bottom:6px;}
+.why.ok .verdict{color:var(--ok);} .why.no .verdict{color:var(--bad);}
+.why p{margin:0 0 8px;} .why p:last-child{margin:0;}
+.why .ref{font-size:.85rem; color:var(--ink-soft);}
+
+.result{margin-top:40px; padding:26px; border:2px solid var(--ink); border-radius:4px;
+  background:var(--surface); display:none;}
+.result.on{display:block;}
+.result h3{font-family:var(--display); font-size:1.6rem; margin:0 0 6px;}
+.big{font-family:var(--mono); font-size:2.6rem; font-weight:700; color:var(--accent);
+  font-variant-numeric:tabular-nums; line-height:1; margin:0 0 4px;}
+.result p{margin:0 0 12px; color:var(--ink-soft);}
+.weak{margin:16px 0 0; padding:0; list-style:none;}
+.weak li{font-size:.9rem; padding:7px 0; border-top:1px solid var(--line); display:flex; gap:10px;}
+.weak li span:first-child{font-family:var(--mono); font-size:.76rem; color:var(--bad); flex:none; width:56px;}
+
+.actions{display:flex; gap:9px; flex-wrap:wrap; margin-top:20px;}
+.act{background:var(--ink); color:var(--paper); border:1px solid var(--ink); border-radius:2px;
+  padding:9px 17px; font-family:inherit; font-size:.9rem; font-weight:550; cursor:pointer;}
+.act.ghost{background:transparent; color:var(--ink-soft); border-color:var(--line);}
+.act:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+footer{margin-top:54px; padding-top:20px; border-top:1px solid var(--line);
+  font-size:.85rem; color:var(--ink-soft);}
+footer a{color:var(--accent);}
+</style>
+
+<div class="page">
+
+<header class="masthead">
+  <p class="eyebrow">Simulado · Banco de Dados II</p>
+  <h1>Base de <em>estudo</em> — provisória.</h1>
+  <p class="lede">Questões geradas a partir dos slides, cobrindo os três temas na mesma proporção do formulário real: modelagem relacional, orientação a objetos e bancos temporais. Responda antes de olhar o gabarito — cada alternativa é corrigida na hora. <strong>Conforme você for me passando as perguntas reais do Forms, vou substituindo e completando este banco</strong> para bater exatamente com a prova.</p>
+</header>
+
+<div class="scorebar">
+  <div class="track"><span id="bar"></span></div>
+  <div class="tally" id="tally">respondidas <b>0</b>/0 · <span class="hit">0 certas</span> · <span class="miss">0 erradas</span></div>
+</div>
+
+<main id="quiz"></main>
+
+<div class="result" id="result">
+  <h3>Resultado</h3>
+  <p class="big" id="pct">—</p>
+  <p id="verdito"></p>
+  <ul class="weak" id="weak"></ul>
+  <div class="actions">
+    <button class="act" id="again">Refazer o simulado</button>
+    <button class="act ghost" id="top">Voltar ao topo</button>
+  </div>
+</div>
+
+<footer>
+  <p>Conteúdo tirado dos três decks da disciplina Banco de Dados II (Prof. Leonardo Sápiras): Modelagem relacional, Orientação a objetos, Bancos de dados temporais. Bibliografia: ROB, Peter; CORONEL, Carlos. <em>Sistemas de Banco de Dados</em>.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var Q = [
+
+  /* ===================== PARTE I — MODELAGEM RELACIONAL ===================== */
+  {parte:"Parte I — Modelagem relacional", sub:"Codd, chaves, dependência funcional, integridade, operadores.", novaParte:true,
+   tipo:"mc",
+   stem:"O modelo relacional foi idealizado por quem, em que empresa e em que ano?",
+   opts:["Charles Bachman, na General Electric, em 1964",
+         "Edgar Frank Codd, na IBM, em 1970",
+         "Peter Chen, na Bell Labs, em 1976",
+         "Donald Chamberlin, na IBM, em 1974"],
+   ok:1,
+   why:"Codd publicou o artigo <em>\"A Relational Model of Data for Large Shared Databanks\"</em> em 1970, enquanto trabalhava na IBM. É a origem de todo o modelo de tabelas, tuplas e atributos que usamos hoje."},
+
+  {tipo:"mc",
+   stem:"No modelo relacional, uma tabela também é chamada de <strong>relação</strong>. Como se chamam, respectivamente, uma linha e uma coluna dessa tabela?",
+   opts:["Tupla e atributo","Registro e campo","Instância e domínio","Entidade e relacionamento"],
+   ok:0,
+   why:"Linha = <strong>tupla</strong> (uma ocorrência de entidade). Coluna = <strong>atributo</strong>, com nome próprio e domínio de valores. \"Registro e campo\" é terminologia de arquivo, não do modelo relacional formal."},
+
+  {tipo:"mc",
+   stem:"Sobre as propriedades de uma tabela relacional, qual afirmação está <strong>incorreta</strong>?",
+   opts:["Cada interseção entre linha e coluna representa um único valor",
+         "Todos os valores em uma coluna devem se adequar ao mesmo domínio",
+         "A ordem das linhas e colunas importa para o SGBD",
+         "Toda tabela deve ter um atributo (ou combinação) que identifique cada linha unicamente"],
+   ok:2,
+   why:"A ordem de linhas e colunas <strong>não</strong> é relevante para o SGBD — é só relevante para quem lê o resultado. As outras três são propriedades corretas da estrutura bidimensional da tabela."},
+
+  {tipo:"mc",
+   stem:"Nos níveis de abstração ANSI vistos em aula (externo, conceitual, interno, físico), qual nível tem o <strong>maior</strong> nível de abstração e foco nas visões dos usuários finais?",
+   opts:["Físico","Interno","Conceitual","Externo"],
+   ok:3,
+   why:"O <strong>externo</strong> é o nível mais alto: cada usuário enxerga só a visão que lhe interessa. Descendo, o conceitual dá a visão global dos dados; o interno já é específico de um SGBD; o físico trata de métodos de armazenamento e acesso — o nível mais baixo e mais dependente de hardware."},
+
+  {tipo:"mc",
+   stem:"Qual afirmação define corretamente o <strong>princípio da determinação funcional</strong> A → B?",
+   opts:["A e B sempre têm o mesmo tipo de dado",
+         "Cada valor de A determina um, e somente um, valor de B",
+         "A é uma chave estrangeira que referencia B",
+         "A e B pertencem a tabelas diferentes"],
+   ok:1,
+   why:"Exemplo da aula: <code>CPF → Nome, Data de nascimento</code>. Cada CPF determina exatamente um nome e uma data de nascimento — isso é dependência funcional. Não tem relação com tipo de dado nem exige tabelas separadas."},
+
+  {tipo:"mc",
+   stem:"Em uma chave composta (A, B, C), o atributo D tem <strong>dependência funcional completa</strong> em relação a essa chave quando:",
+   opts:["D depende de A, de B e de C, cada um isoladamente",
+         "D depende da chave composta inteira, mas de nenhum subconjunto próprio dela",
+         "D depende apenas do atributo A",
+         "D não depende de nenhum dos três atributos"],
+   ok:1,
+   why:"É o oposto da dependência parcial: se D já pudesse ser determinado por (A,B), por exemplo, a dependência em relação a (A,B,C) não seria completa. É o conceito-base para entender a segunda forma normal."},
+
+  {tipo:"mc",
+   stem:"Associe corretamente os tipos de chave às suas definições.",
+   opts:["Super chave = a mínima possível; chave candidata = qualquer atributo que identifique a tupla",
+         "Super chave = atributo (simples ou composto) que identifica uma tupla; chave candidata = super chave mínima, irredutível",
+         "Chave primária = pode ser nula; chave estrangeira = nunca pode ser nula",
+         "Chave secundária = identifica a tupla de forma única e obrigatória"],
+   ok:1,
+   why:"Super chave é qualquer conjunto de atributos que identifica a tupla — pode ter atributos redundantes. Chave candidata é a versão <strong>mínima</strong> dela, sem excesso. Entre as candidatas, escolhe-se uma para ser a chave primária."},
+
+  {tipo:"mc",
+   stem:"Qual das alternativas descreve corretamente a <strong>chave primária</strong>?",
+   opts:["Atributo usado apenas para acelerar buscas, podendo ser nulo",
+         "Chave candidata selecionada para identificar a tupla; não pode ser nula",
+         "Atributo de outra tabela usado para estabelecer relacionamento",
+         "Qualquer atributo que apareça em mais de uma tabela"],
+   ok:1,
+   why:"A chave primária é escolhida entre as chaves candidatas e, por regra de integridade de entidade, <strong>nunca pode ser nula</strong> — é o que garante que toda linha seja unicamente identificável."},
+
+  {tipo:"mc",
+   stem:"Sobre a chave estrangeira, o que diz a regra de integridade referencial?",
+   opts:["Ela nunca pode ser nula, em hipótese alguma",
+         "Ela pode ser nula, desde que não seja parte da chave primária da própria tabela; se não for nula, deve referenciar um valor de chave primária existente",
+         "Ela deve sempre repetir o nome da coluna da tabela referenciada",
+         "Ela substitui a necessidade de uma chave primária na tabela onde está"],
+   ok:1,
+   why:"Duas partes da regra: (1) FK pode ser nula, contanto que não integre a PK da própria tabela; (2) todo valor <strong>não nulo</strong> de FK precisa apontar para uma PK que realmente exista — senão a referência fica \"solta\"."},
+
+  {tipo:"mc",
+   stem:"Qual é a diferença entre os operadores relacionais de <strong>seleção</strong> e <strong>projeção</strong>?",
+   opts:["Seleção filtra colunas; projeção filtra linhas",
+         "Seleção filtra linhas (algumas ocorrências); projeção filtra colunas, mantendo todos os valores delas",
+         "Os dois fazem exatamente a mesma coisa",
+         "Seleção só funciona com uma tabela; projeção exige duas ou mais"],
+   ok:1,
+   why:"Pense em uma planilha: <strong>seleção</strong> é filtrar quais <em>linhas</em> aparecem (uma condição do tipo \"WHERE\"); <strong>projeção</strong> é escolher quais <em>colunas</em> aparecem, mantendo todas as linhas que restaram."},
+
+  {tipo:"mc",
+   stem:"\"Uma casa tem muitos quartos\" é um exemplo de relacionamento de que tipo?",
+   opts:["1:1","1:M","M:N","Nenhum dos anteriores, pois não é um relacionamento"],
+   ok:1,
+   why:"Um para muitos (1:M): uma casa (o \"1\") se relaciona com vários quartos (o \"M\"). Já \"uma pessoa possui um CPF\" é 1:1, e \"disciplinas possuem muitos alunos\" (e alunos cursam muitas disciplinas) é M:N."},
+
+  {tipo:"mc",
+   stem:"Se uma tabela possui 1 bilhão de registros, qual é a forma mais eficiente de encontrar um registro específico?",
+   opts:["Percorrer a tabela inteira, linha por linha, até achar",
+         "Usar índices",
+         "Duplicar a tabela em várias menores",
+         "Ordenar a tabela toda antes de cada consulta"],
+   ok:1,
+   why:"Índices são estruturas de acesso (como árvores B) que evitam a varredura completa da tabela — é a resposta que o próprio professor destacou em aula como \"a\" resposta certa."},
+
+  {tipo:"mc",
+   stem:"Qual das regras de Codd estabelece que, para um SGBD ser considerado relacional, ele deve gerenciar os dados <strong>exclusivamente</strong> por meio de recursos relacionais?",
+   opts:["Regra da informação","Regra do catálogo dinâmico","Regra zero","Regra de independência de distribuição"],
+   ok:2,
+   why:"A <strong>regra zero</strong> é a base sobre a qual todas as outras regras de Codd se apoiam — sem ela, nenhuma das demais faz sentido, por isso costuma cair como pergunta \"qual regra fundamenta as demais\"."},
+
+  {tipo:"mc",
+   stem:"Qual é a diferença entre <strong>independência física</strong> e <strong>independência lógica</strong> dos dados, segundo as regras de Codd?",
+   opts:["Física trata de mudanças na estrutura de tabelas (como adicionar coluna); lógica trata do método de armazenamento",
+         "Física trata do método de armazenamento e acesso; lógica trata de mudanças de estrutura que preservam os valores originais (como adicionar coluna)",
+         "As duas são sinônimos e tratam do mesmo conceito",
+         "Física se refere ao hardware do servidor; lógica, à linguagem de programação usada"],
+   ok:1,
+   why:"<strong>Independência física</strong>: aplicações não são afetadas quando mudam os métodos de acesso/armazenamento físico. <strong>Independência lógica</strong>: aplicações não são afetadas por mudanças estruturais que preservem os dados originais, como reordenar ou incluir colunas."},
+
+  {tipo:"mc",
+   stem:"A \"sublinguagem de dados\", uma das regras de Codd, exige que o SGBD relacional suporte uma linguagem com que característica?",
+   opts:["Imperativa, com foco em laços e condicionais explícitos",
+         "Declarativa, cobrindo definição de dados, manipulação, integridade, autorização e transações",
+         "Exclusiva para definição de tabelas, sem manipulação de dados",
+         "Proprietária de cada fabricante de SGBD, sem padronização"],
+   ok:1,
+   why:"A ideia é que exista uma única linguagem <strong>declarativa</strong> (você diz o quê, não como) cobrindo todo o ciclo de vida dos dados — é essencialmente a descrição do papel que o SQL cumpre hoje."},
+
+  {tipo:"mc",
+   stem:"Segundo a hierarquia de modelos de dados vista em aula (Rob e Coronel), colocando em ordem de <strong>menor</strong> para <strong>maior</strong> semântica, qual sequência está correta?",
+   opts:["Orientado a objetos → Relacional → Sistemas de arquivos → Semântico",
+         "Sistemas de arquivos → Hierárquico → Relacional → Entidade-relacionamento → Semântico → Orientado a objetos → Relacional estendido",
+         "Relacional estendido → Semântico → Relacional → Hierárquico → Sistemas de arquivos",
+         "Entidade-relacionamento → Sistemas de arquivos → Relacional → Orientado a objetos"],
+   ok:1,
+   why:"A evolução caminha buscando mais capacidade de representar significado: de simples arquivos até o modelo relacional estendido (objeto/relacional), que combina a robustez do relacional com conceitos de objetos."},
+
+  /* ===================== PARTE II — ORIENTAÇÃO A OBJETOS ===================== */
+  {parte:"Parte II — Orientação a objetos", sub:"Classe, objeto, herança, encapsulamento e bancos de dados OO.", novaParte:true,
+   tipo:"mc",
+   stem:"Em que década o paradigma de orientação a objetos teve início, e por quê?",
+   opts:["Anos 60, para substituir a programação estruturada por completo",
+         "Anos 80, porque tipos primitivos e estruturas simples não eram mais suficientes para as necessidades dos desenvolvedores",
+         "Anos 90, junto com o surgimento da internet",
+         "Anos 2000, com o crescimento dos bancos NoSQL"],
+   ok:1,
+   why:"O paradigma surgiu nos anos 80. A motivação foi a limitação dos tipos e estruturas de dados tradicionais diante da complexidade crescente do software — daí a ideia de organizar o programa como uma coleção de objetos."},
+
+  {tipo:"mc",
+   stem:"Segundo a definição vista em aula, um programa orientado a objetos é, essencialmente:",
+   opts:["Uma sequência de instruções executadas em ordem estrita",
+         "Uma coleção de objetos que trocam mensagens entre si, alterando seus estados",
+         "Um conjunto de tabelas relacionadas por chaves estrangeiras",
+         "Um script que só manipula variáveis globais"],
+   ok:1,
+   why:"A troca de mensagens entre objetos é o mecanismo central: quando um objeto \"manda mensagem\" para outro (chama um método dele), isso pode alterar o estado de ambos."},
+
+  {tipo:"mc",
+   stem:"Quais são os três elementos-chave da orientação a objetos citados em aula?",
+   opts:["Tabelas, tuplas e atributos",
+         "Herança, tipos de dados abstratos e vinculação dinâmica de chamadas de métodos",
+         "Seleção, projeção e junção",
+         "Encapsulamento, normalização e indexação"],
+   ok:1,
+   why:"Esses três — herança, abstração de dados e vinculação (binding) dinâmica de métodos — são apontados como os pilares que diferenciam o paradigma OO dos anteriores."},
+
+  {tipo:"mc",
+   stem:"Qual definição de <strong>classe</strong> está correta?",
+   opts:["Uma instância concreta de um objeto, com valores definidos",
+         "Uma declaração de um tipo abstrato que encapsula constantes, variáveis e métodos para manipulação dessas variáveis",
+         "Um conjunto de tabelas relacionadas",
+         "Um índice usado para acelerar buscas em um banco de dados"],
+   ok:1,
+   why:"Classe é o \"molde\" — a declaração do tipo. O objeto é que é a instância concreta. Uma classe também pode ter subclasses, formando hierarquias de herança."},
+
+  {tipo:"mc",
+   stem:"Sobre classes abstratas, qual afirmação está correta?",
+   opts:["Podem ser instanciadas diretamente, como qualquer classe concreta",
+         "Fornecem apenas a estrutura (nomes de métodos e atributos), sem implementação, e não podem ser instanciadas",
+         "São sempre subclasses de uma interface",
+         "Só existem em bancos de dados orientados a objetos, não em linguagens de programação"],
+   ok:1,
+   why:"Classe abstrata define a \"assinatura\" dos métodos, sem código. Ela serve de contrato para as subclasses concretas, que implementam o comportamento e, essas sim, podem ser instanciadas."},
+
+  {tipo:"mc",
+   stem:"O que caracteriza o <strong>estado</strong> de um objeto?",
+   opts:["O tipo de visibilidade de seus métodos (public, protected, private)",
+         "Os valores de seus atributos em um dado momento",
+         "A quantidade de mensagens que ele já recebeu",
+         "O nome da classe da qual ele é subclasse"],
+   ok:1,
+   why:"O estado é definido pelos valores atuais dos atributos do objeto. Duas instâncias da mesma classe têm a mesma estrutura, mas podem ter estados (valores) completamente diferentes."},
+
+  {tipo:"mc",
+   stem:"O que é uma <strong>mensagem</strong>, no vocabulário da orientação a objetos?",
+   opts:["Um erro de execução lançado por um objeto",
+         "A chamada de um método",
+         "Um comentário no código-fonte da classe",
+         "Um valor nulo atribuído a um atributo"],
+   ok:1,
+   why:"Mensagem é entendida como a chamada de um método de um objeto. Quando um objeto \"envia mensagem\" a outro, na prática está chamando um método dele."},
+
+  {tipo:"mc",
+   stem:"Qual a diferença entre um <strong>atributo de objeto</strong> e um <strong>atributo de classe</strong>?",
+   opts:["Atributo de objeto é dado individual de cada instância; atributo de classe é dado compartilhado entre todos os objetos da mesma classe",
+         "Atributo de classe só existe em linguagens funcionais",
+         "Atributo de objeto nunca pode ser alterado após a criação",
+         "Não há diferença: são termos sinônimos"],
+   ok:0,
+   why:"Atributo de objeto pertence a cada instância (cada objeto tem o seu valor próprio). Atributo de classe é compartilhado — todos os objetos daquela classe enxergam (e podem alterar) o mesmo valor."},
+
+  {tipo:"mc",
+   stem:"Sobre os níveis de visibilidade (public, protected, private), qual associação está correta?",
+   opts:["Private: acessível de qualquer lugar do sistema",
+         "Protected: acessível apenas pela própria classe e suas subclasses",
+         "Public: acessível apenas dentro da própria classe",
+         "Os três níveis têm exatamente o mesmo alcance de acesso"],
+   ok:1,
+   why:"Public = acesso livre, de qualquer lugar. Protected = classe e suas subclasses. Private = só dentro da própria classe. É o oposto do que as alternativas erradas descrevem."},
+
+  {tipo:"mc",
+   stem:"Sobre herança múltipla, o que é correto afirmar?",
+   opts:["Nenhuma linguagem de programação permite herança múltipla",
+         "Linguagens como C++ permitem que um objeto herde de duas ou mais classes; Java não permite esse tipo de herança de classes",
+         "Java permite herança múltipla de classes livremente",
+         "Herança múltipla é exclusiva de bancos de dados orientados a objetos"],
+   ok:1,
+   why:"É a diferença citada explicitamente em aula: C++ permite herdar de múltiplas classes; Java restringe a herança de classe a uma única superclasse (mas permite implementar múltiplas interfaces)."},
+
+  {tipo:"mc",
+   stem:"Qual é a motivação central para a existência dos <strong>bancos de dados orientados a objetos</strong>?",
+   opts:["Reduzir o tamanho do banco de dados em disco",
+         "Persistir os objetos do código diretamente, em vez de convertê-los em tabelas de um banco relacional",
+         "Eliminar totalmente a necessidade de chaves primárias",
+         "Permitir consultas apenas em linguagem natural"],
+   ok:1,
+   why:"A pergunta motivadora da aula é: por que converter objetos em tabelas, se dá para guardar o objeto diretamente? Um banco de dados orientado a objetos armazena as informações como objetos, do mesmo jeito que são usadas em linguagens OO."},
+
+  {tipo:"mc",
+   stem:"Em um sistema de biblioteca com as classes Livro, Autor e Editora, qual é a principal vantagem prática de um banco orientado a objetos sobre um banco relacional, segundo o exemplo da aula?",
+   opts:["Acessar o autor de um livro exige menos espaço em disco",
+         "É possível acessar o autor diretamente (livro.autor.nome), sem precisar de join entre tabelas",
+         "O banco orientado a objetos não precisa de chave alguma",
+         "É mais fácil de aprender SQL nesse tipo de banco"],
+   ok:1,
+   why:"No relacional, ligar Livro a Autor exige um join entre as tabelas. No orientado a objetos, a classe Livro já contém um objeto Autor embutido, então basta acessar <code>livro.autor.nome</code> diretamente."},
+
+  {tipo:"mc",
+   stem:"Qual das opções abaixo é uma <strong>desvantagem</strong> real dos bancos de dados orientados a objetos, segundo o material da disciplina?",
+   opts:["Não conseguem representar objetos complexos",
+         "Pouca padronização — não existe uma linguagem única para eles como o SQL é para o relacional",
+         "Não suportam encapsulamento",
+         "Não podem ser usados por linguagens orientadas a objetos"],
+   ok:1,
+   why:"A ausência de um padrão universal (algo como o SQL) reduz ferramentas, suporte e dificulta a integração com sistemas legados baseados em SQL — é a desvantagem mais citada em aula."},
+
+  {tipo:"mc",
+   stem:"Qual das opções lista corretamente um exemplo de SGBD orientado a objetos e a linguagem/plataforma associada?",
+   opts:["MySQL — voltado para Smalltalk",
+         "db4o — para Java e .NET",
+         "PostgreSQL — banco comercial para Java",
+         "Oracle — usado exclusivamente em aplicações .NET"],
+   ok:1,
+   why:"Exemplos da aula: db4o (Java/.NET), ObjectDB (comercial, Java), Versant Object Database (aplicações corporativas), GemStone/S (Smalltalk). MySQL, PostgreSQL e Oracle são bancos relacionais, não orientados a objetos."},
+
+  /* ===================== PARTE III — BANCOS DE DADOS TEMPORAIS ===================== */
+  {parte:"Parte III — Bancos de dados temporais", sub:"Tipos de tempo, características, SQL temporal e cenários de uso.", novaParte:true,
+   tipo:"mc",
+   stem:"Por que bancos de dados tradicionais têm dificuldade em fazer análises históricas?",
+   opts:["Porque não suportam SQL",
+         "Porque armazenam apenas o estado atual dos dados, sem registrar sua evolução no tempo",
+         "Porque não podem ter chave primária",
+         "Porque são sempre bancos NoSQL"],
+   ok:1,
+   why:"É o ponto de partida da aula: bancos tradicionais guardam só o \"agora\". Para recuperar dados do passado e planejar cenários futuros, é preciso registrar a informação junto ao fator tempo — daí o banco de dados temporal."},
+
+  {tipo:"mc",
+   stem:"O que é o <strong>tempo de transação</strong> em um banco de dados temporal?",
+   opts:["O período em que a informação é verdadeira no mundo real",
+         "O momento em que a informação foi inserida ou alterada no banco — quando foi registrada",
+         "A combinação entre tempo de validade e tempo de transação",
+         "O tempo gasto para executar uma consulta SQL"],
+   ok:1,
+   why:"Tempo de transação registra <strong>quando</strong> o dado foi persistido no banco, e é usado principalmente para auditoria e controle de alterações — não tem relação com o momento em que o fato é verdadeiro no mundo real."},
+
+  {tipo:"mc",
+   stem:"Um contrato é válido de 01/01/2020 a 31/12/2022. Esse período representa qual tipo de tempo?",
+   opts:["Tempo de transação","Tempo de validade","Tempo bitemporal","Nenhum dos anteriores"],
+   ok:1,
+   why:"É exatamente o exemplo da aula: tempo de validade é o período em que a informação é verdadeira <strong>no mundo real</strong>, independentemente de quando foi digitada no sistema."},
+
+  {tipo:"mc",
+   stem:"O que caracteriza o <strong>tempo bitemporal</strong>?",
+   opts:["É o dobro do tempo de validade de um registro",
+         "Combina tempo de transação e tempo de validade, oferecendo visão completa da evolução dos dados",
+         "É usado apenas em bancos NoSQL",
+         "Refere-se ao tempo gasto em dois SGBDs diferentes"],
+   ok:1,
+   why:"Bitemporal une as duas dimensões: quando o fato era verdadeiro no mundo real (validade) e quando o sistema passou a registrar isso (transação). É essencial para auditorias detalhadas, quando é preciso saber \"o que o sistema sabia e quando\"."},
+
+  {tipo:"mc",
+   stem:"Qual das alternativas é uma <strong>vantagem</strong> real de um banco de dados temporal?",
+   opts:["Redução no volume total de dados armazenados",
+         "Suporte a auditorias e conformidade, com histórico completo e rastreável",
+         "Simplificação das consultas em relação a um banco tradicional",
+         "Suporte nativo garantido em todos os SGBDs do mercado"],
+   ok:1,
+   why:"Ao manter o histórico, o banco temporal favorece auditoria e conformidade regulatória. Já o volume de dados <strong>aumenta</strong> (não diminui), as consultas ficam <strong>mais</strong> complexas, e nem todo SGBD suporta isso nativamente — todas as outras alternativas descrevem desvantagens, não vantagens."},
+
+  {tipo:"mc",
+   stem:"Qual característica de banco de dados temporal garante que \"alterações nos dados não sobrescrevem os valores anteriores\"?",
+   opts:["Consistência temporal","Versionamento automático","Auditoria e rastreabilidade","Dimensão temporal"],
+   ok:1,
+   why:"É a definição de versionamento automático: cada alteração gera uma nova versão registrada com sua própria validade, preservando as versões anteriores em vez de sobrescrevê-las."},
+
+  {tipo:"mc",
+   stem:"A exigência de que um banco de dados temporal não permita, por exemplo, intervalos de validade sobrepostos para o mesmo atributo, é um exemplo de qual característica?",
+   opts:["Consistência temporal","Versionamento automático","Maior volume de dados","Suporte a auditoria"],
+   ok:0,
+   why:"Consistência temporal é a garantia de integridade dos dados <strong>em relação ao tempo</strong> — o exemplo dado em aula é justamente não permitir que dois períodos de validade se sobreponham quando isso não faz sentido no domínio."},
+
+  {tipo:"mc",
+   stem:"Por que áreas reguladas, como financeiro, jurídico e saúde, dependem fortemente de suporte a auditoria em bancos temporais?",
+   opts:["Porque esses setores não usam bancos relacionais",
+         "Porque é preciso verificar quem alterou o quê e quando, o que só é possível mantendo histórico rastreável",
+         "Porque bancos temporais são gratuitos, diferente dos relacionais",
+         "Porque a lei proíbe o uso de bancos convencionais nesses setores"],
+   ok:1,
+   why:"A rastreabilidade — saber quem alterou, quando e o que mudou — é crítica em setores regulados justamente porque decisões e transações precisam ser auditáveis depois do fato."},
+
+  {tipo:"mc",
+   stem:"Na extensão <code>temporal_tables</code> do PostgreSQL, o que faz o comando <code>SELECT create_history_table('funcionario', 'funcionario_hist');</code>?",
+   opts:["Apaga a tabela funcionario e cria funcionario_hist em seu lugar",
+         "Ativa o versionamento temporal, criando uma tabela de histórico associada à tabela funcionario",
+         "Cria um índice na tabela funcionario para acelerar buscas",
+         "Faz um backup completo do banco de dados"],
+   ok:1,
+   why:"É o passo que liga a tabela original ao versionamento automático: a partir daí, alterações em <code>funcionario</code> passam a gerar novas linhas em <code>funcionario_hist</code>, cada uma com seu período de validade."},
+
+  {tipo:"mc",
+   stem:"Considere a consulta:<div class='graph'><b>SELECT</b> nome, salario<br><b>FROM</b> funcionario_hist<br><b>WHERE</b> nome = 'João' <b>AND</b><br>tstzrange(val_period_start, val_period_end) @&gt; TIMESTAMP '2022-01-01';</div>O que essa consulta responde?",
+   opts:["Todos os salários que João já recebeu, em qualquer época",
+         "Qual era o salário de João especificamente na data 01/01/2022",
+         "Se João ainda trabalha na empresa hoje",
+         "O salário médio de todos os funcionários em 2022"],
+   ok:1,
+   why:"O operador <code>@&gt;</code> testa se o intervalo de validade (<code>tstzrange</code>) contém aquele instante específico — a consulta recupera o registro cujo período de validade \"cobre\" 01/01/2022, ou seja, o salário vigente naquela data."},
+
+  {tipo:"mc",
+   stem:"Para listar <strong>todas as versões</strong> de salário de um funcionário ao longo do tempo, ordenadas cronologicamente, qual cláusula SQL é essencial na consulta?",
+   opts:["GROUP BY salario","ORDER BY val_period_start","LIMIT 1","DISTINCT nome"],
+   ok:1,
+   why:"Sem filtrar por uma data específica, a consulta retorna todas as linhas históricas daquele funcionário; ordenar por <code>val_period_start</code> apresenta as versões na ordem em que passaram a valer."},
+
+  {tipo:"mc",
+   stem:"Em qual cenário de utilização de bancos temporais o objetivo é \"identificar anomalias em séries temporais\" a partir de coleta de dados em tempo real?",
+   opts:["Histórico salarial (RH)","Finanças (transações e saldos)","IoT (sensores)","Regras de Codd"],
+   ok:2,
+   why:"O cenário de IoT foi descrito na aula com foco em coleta de dados de sensores em tempo real, análise de tendências históricas e identificação de anomalias em séries temporais — bem diferente dos cenários de RH e finanças."},
+
+  {tipo:"mc",
+   stem:"Associe corretamente o SGBD (ou extensão) ao seu recurso de suporte temporal.",
+   opts:["Oracle → System-Versioned Tables; SQL Server → Flashback",
+         "Oracle → Flashback; SQL Server → System-Versioned Tables",
+         "DB2 → séries temporais; TimescaleDB → suporte bitemporal",
+         "InfluxDB → suporte bitemporal relacional"],
+   ok:1,
+   why:"Oracle tem o recurso Flashback; SQL Server tem as System-Versioned Tables. DB2 é o que oferece suporte bitemporal; TimescaleDB e InfluxDB são voltados a séries temporais (o segundo é NoSQL)."},
+
+  {tipo:"mc",
+   stem:"Qual é a principal razão pela qual \"nem todos os SGBDs suportam bancos temporais nativamente\" é apontada como desvantagem?",
+   opts:["Porque bancos temporais são sempre mais lentos que bancos relacionais comuns",
+         "Porque, sem suporte nativo, é preciso implementar o versionamento manualmente ou via extensões, aumentando a complexidade",
+         "Porque bancos temporais não podem ter chave primária",
+         "Porque bancos temporais só funcionam em bancos NoSQL"],
+   ok:1,
+   why:"Quando o SGBD não tem suporte nativo, cabe à equipe implementar o versionamento na mão (tabelas de histórico, triggers) ou depender de extensões como o <code>temporal_tables</code> do PostgreSQL — o que aumenta a complexidade de manutenção."}
+  ];
+
+  /* ---------- renderização ---------- */
+  var quiz = document.getElementById("quiz");
+  var LETRAS = ["A","B","C","D","E"];
+  var totalMC = 0;
+  for (var t=0;t<Q.length;t++) if (Q[t].tipo === "mc") totalMC++;
+
+  var respondidas = 0, certas = 0;
+  var erros = [];
+
+  function render(){
+    quiz.innerHTML = "";
+    respondidas = 0; certas = 0; erros = [];
+    document.getElementById("result").classList.remove("on");
+
+    var numMC = 0;
+    for (var i=0;i<Q.length;i++){
+      var q = Q[i];
+
+      if (q.novaParte){
+        var p = document.createElement("p");
+        p.className = "parte";
+        p.textContent = q.parte;
+        quiz.appendChild(p);
+        var h = document.createElement("h2");
+        h.textContent = q.parte.replace(/^Parte [IV]+ — /, "");
+        quiz.appendChild(h);
+        var sb = document.createElement("p");
+        sb.className = "parte-sub";
+        sb.textContent = q.sub;
+        quiz.appendChild(sb);
+      }
+
+      var card = document.createElement("div");
+      card.className = "q";
+
+      var label;
+      if (q.tipo === "mc"){ numMC++; label = 'Questão ' + numMC + ' <span class="kind">· múltipla escolha</span>'; }
+      else { label = '<span class="kind">Discursiva</span>'; }
+
+      var html = '<span class="q-num">' + label + '</span>';
+      html += (q.extra || "");
+      html += '<p class="stem">' + q.stem + '</p>';
+
+      var ordem = [];
+      for (var z=0;z<q.opts.length;z++) ordem.push(z);
+      if (!q.fixa) embaralhar(ordem);
+
+      html += '<div class="opts">';
+      for (var o=0;o<ordem.length;o++){
+        html += '<button type="button" class="opt" data-i="' + ordem[o] + '">' +
+                '<span class="letra">' + LETRAS[o] + '</span><span>' + q.opts[ordem[o]] + '</span></button>';
+      }
+      html += '</div><div class="why"><span class="verdict"></span><div class="txt"></div></div>';
+
+      card.innerHTML = html;
+      quiz.appendChild(card);
+      bindMC(card, q, numMC);
+    }
+    updateTally();
+  }
+
+  function embaralhar(a){
+    for (var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random() * (i+1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function bindMC(card, q, numero){
+    var botoes = card.querySelectorAll(".opt");
+    var why = card.querySelector(".why");
+
+    var posCerta = 0;
+    for (var p=0;p<botoes.length;p++){
+      if (parseInt(botoes[p].getAttribute("data-i"), 10) === q.ok) posCerta = p;
+    }
+
+    for (var b=0;b<botoes.length;b++){
+      botoes[b].addEventListener("click", function(){
+        if (card.classList.contains("resolvida")) return;
+        var escolhida = parseInt(this.getAttribute("data-i"), 10);
+        var acertou = (escolhida === q.ok);
+
+        card.classList.add("resolvida");
+        for (var j=0;j<botoes.length;j++){
+          botoes[j].disabled = true;
+          if (parseInt(botoes[j].getAttribute("data-i"), 10) === q.ok) botoes[j].classList.add("certa");
+        }
+        if (!acertou) this.classList.add("errada");
+
+        why.className = "why " + (acertou ? "ok" : "no");
+        why.querySelector(".verdict").textContent =
+          acertou ? "✓ Correto" : "✕ Resposta correta: " + LETRAS[posCerta];
+        why.querySelector(".txt").innerHTML = q.why;
+
+        respondidas++;
+        if (acertou) certas++;
+        else erros.push({n:numero, tema:temaDe(q)});
+        updateTally();
+      });
+    }
+  }
+
+  function temaDe(q){
+    return q.parteAtual || "";
+  }
+
+  (function marcar(){
+    var atual = "";
+    for (var i=0;i<Q.length;i++){
+      if (Q[i].novaParte) atual = Q[i].parte;
+      Q[i].parteAtual = atual;
+    }
+  })();
+
+  function updateTally(){
+    var erradas = respondidas - certas;
+    document.getElementById("tally").innerHTML =
+      "respondidas <b>" + respondidas + "</b>/" + totalMC +
+      ' · <span class="hit">' + certas + " certas</span>" +
+      ' · <span class="miss">' + erradas + " erradas</span>";
+    document.getElementById("bar").style.width = (respondidas / totalMC * 100) + "%";
+
+    if (respondidas === totalMC) mostrarResultado();
+  }
+
+  function mostrarResultado(){
+    var pct = Math.round(certas / totalMC * 100);
+    var res = document.getElementById("result");
+    document.getElementById("pct").textContent = certas + "/" + totalMC + "  ·  " + pct + "%";
+
+    var msg;
+    if (pct >= 90)      msg = "Você está pronto. Revise só os erros abaixo.";
+    else if (pct >= 75) msg = "Base sólida. Foque nos temas abaixo antes de dormir.";
+    else if (pct >= 60) msg = "Dá para chegar lá. Releia o guia nas seções dos erros e refaça o simulado.";
+    else                msg = "Volte ao guia antes de refazer, começando pelos temas onde mais errou.";
+    document.getElementById("verdito").textContent = msg;
+
+    var porTema = {};
+    for (var e=0;e<erros.length;e++){
+      var t = erros[e].tema || "Geral";
+      if (!porTema[t]) porTema[t] = [];
+      porTema[t].push(erros[e].n);
+    }
+    var ul = document.getElementById("weak");
+    ul.innerHTML = "";
+    var vazio = true;
+    for (var tema in porTema){
+      vazio = false;
+      var li = document.createElement("li");
+      li.innerHTML = '<span>Q' + porTema[tema].join(", Q") + '</span><span>' + tema + '</span>';
+      ul.appendChild(li);
+    }
+    if (vazio){
+      var li2 = document.createElement("li");
+      li2.innerHTML = '<span>—</span><span>Nenhum erro. Placar limpo.</span>';
+      ul.appendChild(li2);
+    }
+
+    res.classList.add("on");
+    res.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  document.getElementById("again").addEventListener("click", function(){
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+  document.getElementById("top").addEventListener("click", function(){
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  render();
+})();
+</script>
+<script src="theme.js" defer></script>
+</body>
+</html>

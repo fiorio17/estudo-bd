@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Material de revisao da disciplina de Banco de Dados II: guia e simulado sobre modelagem relacional, orientacao a objetos e bancos temporais.">
+  <title>Mapa de estudo — Banco de Dados II</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🗄️%3C/text%3E%3C/svg%3E">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;}
+    body{margin:0;}
+    img,svg,video{max-width:100%;height:auto;}
+    button,input,select,textarea{font:inherit;color:inherit;}
+    table{border-collapse:collapse;}
+  </style>
+</head>
+<body>
+<style>
+:root{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+  --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+    --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+    --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1613; --surface:#161F1B; --surface-2:#202B25;
+  --ink:#E7F0EB; --ink-soft:#9AAAA2; --line:#2B3A33; --grid:#1C2622;
+  --accent:#4FCBA3; --accent-soft:#153428; --accent-ink:#0B1512;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="light"]{
+  --paper:#EEF1EF; --surface:#FAFCFB; --surface-2:#E3EAE6;
+  --ink:#141D1A; --ink-soft:#54615A; --line:#CFDAD4; --grid:#DDE6E1;
+  --accent:#0E6B52; --accent-soft:#D8EFE6; --accent-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,29,26,.06), 0 8px 24px -12px rgba(20,29,26,.18);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16.5px; line-height:1.6;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 28px);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:760px; margin:0 auto; padding:0 20px 80px;}
+
+header{padding:64px 0 28px; border-bottom:2px solid var(--ink); margin-bottom:36px;}
+.eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-soft); margin:0 0 13px;}
+h1{font-family:var(--display); font-weight:700; font-size:clamp(2.2rem,6vw,3.4rem);
+  line-height:1.04; letter-spacing:-.02em; margin:0 0 15px; text-wrap:balance;}
+h1 em{font-style:italic; color:var(--accent);}
+.lede{font-size:1.08rem; color:var(--ink-soft); margin:0; max-width:56ch;}
+
+.cards{display:grid; gap:14px;}
+a.card{display:block; text-decoration:none; color:inherit;
+  background:var(--surface); border:1px solid var(--line); border-radius:4px;
+  padding:22px 24px; box-shadow:var(--shadow);
+  transition:border-color .15s, transform .15s;}
+a.card:hover{border-color:var(--accent); transform:translateY(-2px);}
+a.card:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+@media (prefers-reduced-motion:reduce){ a.card{transition:none;} a.card:hover{transform:none;} }
+
+.card .etapa{font-family:var(--mono); font-size:.68rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:8px;}
+.card h2{font-family:var(--display); font-size:1.42rem; letter-spacing:-.012em; margin:0 0 7px;}
+.card p{margin:0 0 12px; color:var(--ink-soft); font-size:.95rem;}
+.card .meta{font-family:var(--mono); font-size:.74rem; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:6px 14px;}
+.card .meta b{color:var(--accent); font-weight:700;}
+
+h3{font-family:var(--display); font-size:1.2rem; margin:44px 0 10px; letter-spacing:-.01em;}
+p.txt{margin:0 0 13px; color:var(--ink-soft); font-size:.95rem;}
+p.txt strong{color:var(--ink); font-weight:620;}
+code{font-family:var(--mono); font-size:.87em; background:var(--surface-2); padding:.1em .34em; border-radius:2px;}
+ul{margin:0 0 13px; padding-left:22px; color:var(--ink-soft); font-size:.95rem;}
+li{margin-bottom:6px;}
+li strong{color:var(--ink); font-weight:620;}
+
+.aviso{background:var(--surface); border:1px solid var(--line); border-radius:3px;
+  padding:15px 18px; font-size:.9rem; color:var(--ink-soft); margin:16px 0 0; box-shadow:var(--shadow);}
+.aviso b{font-family:var(--mono); font-size:.67rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:7px;}
+.aviso p{margin:0 0 8px;} .aviso p:last-child{margin:0;}
+
+footer{margin-top:50px; padding-top:20px; border-top:1px solid var(--line);
+  font-size:.85rem; color:var(--ink-soft);}
+footer a{color:var(--accent);}
+</style>
+
+<div class="page">
+
+<header>
+  <p class="eyebrow">Banco de Dados II · material de revisão</p>
+  <h1>Mapa de <em>estudo</em>.</h1>
+  <p class="lede">Os três assuntos da prova, condensados em duas páginas que funcionam offline, em qualquer navegador: modelagem relacional, orientação a objetos e bancos de dados temporais.</p>
+</header>
+
+<div class="cards">
+
+  <a class="card" href="guia.html">
+    <span class="etapa">Etapa 1 · revisar</span>
+    <h2>Guia completo</h2>
+    <p>Os três temas do slide ao detalhe: de Codd e as chaves relacionais até bancos orientados a objetos e o SQL de tabelas temporais no PostgreSQL, com autoteste no fim.</p>
+    <div class="meta"><span>modelagem relacional</span><span>orientação a objetos</span><span>bancos temporais</span></div>
+  </a>
+
+  <a class="card" href="simulado.html">
+    <span class="etapa">Etapa 2 · medir</span>
+    <h2>Simulado</h2>
+    <p>Questões objetivas no estilo do formulário, com correção na hora e explicação do porquê de cada alternativa. Base provisória — vai crescer conforme as perguntas reais do Forms forem chegando.</p>
+    <div class="meta"><span><b>44</b> objetivas</span><span>alternativas embaralhadas</span></div>
+  </a>
+
+</div>
+
+<h3>Sobre o formulário da disciplina</h3>
+<p class="txt">O professor passou um Google Forms com 75 questões (25 por assunto), aparentemente geradas por IA a partir do mesmo material. O simulado acima começa com uma base própria, gerada a partir dos slides — a ideia é ir <strong>ajustando e completando</strong> as questões à medida que as reais forem sendo respondidas no Forms, para o simulado bater cada vez mais com a prova de verdade.</p>
+
+<h3>Rodando local</h3>
+<p class="txt">Duas páginas HTML sem nenhuma dependência externa — nada de CDN, fonte remota ou build. Basta abrir <code>index.html</code> no navegador, sem internet.</p>
+
+<div class="aviso">
+  <b>Procedência do conteúdo</b>
+  <p>Guia e simulado foram montados a partir dos três decks da disciplina (Modelagem, Orientação a objetos, Bancos de dados temporais). As questões do simulado ainda não são as reais do Google Forms — são uma base de estudo equivalente, no mesmo estilo e cobrindo os mesmos tópicos.</p>
+</div>
+
+<footer>
+  <p>Fonte principal: ROB, Peter; CORONEL, Carlos. <em>Sistemas de Banco de Dados</em>. Disciplina Banco de Dados II, Prof. Leonardo Sápiras.</p>
+</footer>
+
+</div>
+<script src="theme.js" defer></script>
+</body>
+</html>
