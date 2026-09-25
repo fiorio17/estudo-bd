@@ -541,6 +541,24 @@ tstzrange(val_period_start, val_period_end) @&gt; TIMESTAMP '2022-01-01';</pre>
 
     <div class="card"><button type="button">Cite três SGBDs (ou extensões) com suporte temporal e o que cada um oferece.</button>
       <div class="ans">Oracle (Flashback), SQL Server (System-Versioned Tables), PostgreSQL (extensões como temporal_tables), DB2 (suporte bitemporal), TimescaleDB e InfluxDB (séries temporais/NoSQL temporal).</div></div>
+
+    <div class="card"><button type="button">Nos níveis de abstração ANSI, qual é o mais baixo e o que ele descreve?</button>
+      <div class="ans">O nível Físico — trata dos métodos de armazenamento e acesso, e é dependente tanto de software quanto de hardware. É o oposto do Externo, que é o mais alto (visões dos usuários finais).</div></div>
+
+    <div class="card"><button type="button">O que é Polimorfismo?</button>
+      <div class="ans">A capacidade de a mesma mensagem/método se comportar de formas diferentes dependendo do objeto que a recebe — por exemplo, o método "fazerSom()" produz um resultado diferente para um objeto Cachorro e para um objeto Gato.</div></div>
+
+    <div class="card"><button type="button">O que é uma Interface, em orientação a objetos?</button>
+      <div class="ans">Um contrato de métodos que uma classe se compromete a implementar — define o "o quê" (assinaturas), sem dizer o "como". Em Java, uma classe pode implementar várias interfaces, mesmo não podendo herdar de várias classes.</div></div>
+
+    <div class="card"><button type="button">O que é Encapsulamento?</button>
+      <div class="ans">Esconder o estado interno de um objeto, expondo-o apenas por meio de seus métodos (getters/setters, por exemplo). É a base da visibilidade public/protected/private.</div></div>
+
+    <div class="card"><button type="button">Qual a diferença entre a regra de Codd "Garantia de acesso" e "Sublinguagem de dados"?</button>
+      <div class="ans">Garantia de acesso: todo valor deve ser acessível pela combinação tabela + chave primária + nome de coluna. Sublinguagem de dados: deve existir uma linguagem declarativa única cobrindo definição, manipulação, integridade, autorização e transações — é a regra que descreve, na prática, o papel do SQL.</div></div>
+
+    <div class="card"><button type="button">O que faz o comando <code>CREATE TABLE funcionario (id SERIAL PRIMARY KEY, nome TEXT, salario NUMERIC);</code> no exemplo do PostgreSQL?</button>
+      <div class="ans">Cria a tabela base "funcionario" com uma chave primária autoincrementada (SERIAL). É o passo anterior a ativar o versionamento temporal com create_history_table — sem essa tabela original, não há o que versionar.</div></div>
   </div>
 </section>
 

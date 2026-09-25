@@ -652,6 +652,118 @@ footer a{color:var(--accent);}
    why:"É o versionamento automático em ação: cada salário anterior fica preservado com seu período de validade, permitindo reconstruir \"qual era o salário em tal data\" — sem sobrescrever, sem tabela nova por ano, sem depender de memória volátil."}
   );
 
+  /* ===================== EXTRAS — VARIAÇÕES PROVÁVEIS ===================== */
+  Q.push(
+  {parte:"Extras — variações prováveis", sub:"Pontos dos slides que o Forms de 75 questões não cobriu, mas a prova de 14 pode explorar.", novaParte:true,
+   tipo:"mc",
+   stem:"Nos níveis de abstração ANSI (Externo, Conceitual, Interno, Físico), qual nível é o mais baixo e mais dependente de hardware e software?",
+   opts:["Externo.","Conceitual.","Interno.","Físico."],
+   ok:3, fixa:true,
+   why:"O <strong>Físico</strong> é o nível mais baixo, focado em métodos de armazenamento e acesso, e o único totalmente dependente de hardware e software. O Externo é o oposto: mais alto, focado nas visões dos usuários finais."},
+
+  {tipo:"mc",
+   stem:"Qual nível de abstração ANSI corresponde à \"visão global dos dados\", sendo razoavelmente independente de hardware específico?",
+   opts:["Interno.","Conceitual.","Físico.","Externo."],
+   ok:1, fixa:true,
+   why:"O <strong>Conceitual</strong> é o nível da visão global — é onde fica o diagrama entidade-relacionamento, independente de qual SGBD específico vai implementar o banco."},
+
+  {tipo:"mc",
+   stem:"Segundo a Regra 2 de Codd (Garantia de Acesso), como todo valor de uma tabela relacional deve poder ser acessado?",
+   opts:["Apenas por meio de índices previamente criados.","Por uma combinação de nome de tabela, valor de chave primária e nome de coluna.","Exclusivamente por procedimentos armazenados no catálogo.","Somente por usuários com privilégio de administrador."],
+   ok:1, fixa:true,
+   why:"A regra de garantia de acesso exige que qualquer valor seja localizável por essa combinação — tabela + chave primária + coluna — sem depender de índice, procedimento especial ou privilégio elevado."},
+
+  {tipo:"mc",
+   stem:"O que estabelece a Regra 5 de Codd, chamada de 'Sublinguagem de Dados'?",
+   opts:["O SGBD deve suportar múltiplas linguagens, mas ao menos uma delas deve ser declarativa e cobrir definição de dados, manipulação, integridade, autorização e transações.","Cada tabela deve ter sua própria linguagem de consulta exclusiva.","A linguagem de manipulação de dados deve ser obrigatoriamente procedural, como em C.","Não pode existir mais de uma linguagem de consulta no mesmo SGBD."],
+   ok:0, fixa:true,
+   why:"É essa regra que, na prática, descreve o papel do SQL: uma linguagem <strong>declarativa</strong> única cobrindo todo o ciclo de vida do dado — definição, manipulação, integridade, autorização e transações."},
+
+  {tipo:"mc",
+   stem:"Sobre a Regra de 'Atualização de Visualização' (view updating) de Codd, é correto afirmar que:",
+   opts:["Nenhuma visão (view) pode ser atualizada, apenas consultada.","Toda visualização que seja teoricamente atualizável deve poder ser atualizada pelo próprio sistema.","Apenas o administrador do banco pode atualizar visualizações.","Visões substituem completamente a necessidade de tabelas base."],
+   ok:1, fixa:true,
+   why:"A regra garante que, quando uma view é atualizável em teoria, o próprio SGBD deve viabilizar essa atualização — e não apenas permitir consulta."},
+
+  {tipo:"mc",
+   stem:"A regra de Codd sobre 'Inclusão, alteração e exclusão de alto nível' exige que o SGBD relacional:",
+   opts:["Só permita manipular uma linha por vez, nunca um conjunto.","Dê suporte à manipulação de dados como um conjunto (várias linhas de uma vez), não apenas linha a linha.","Restrinja exclusões a usuários com acesso físico ao servidor.","Elimine a necessidade de comandos INSERT, UPDATE e DELETE."],
+   ok:1, fixa:true,
+   why:"\"Alto nível\" aqui quer dizer operar sobre <strong>conjuntos</strong> de linhas de uma vez (como um UPDATE com WHERE que afeta várias tuplas), não forçar o SGBD a processar registro por registro."},
+
+  {tipo:"mc",
+   stem:"O operador relacional de 'União' só pode ser aplicado corretamente entre duas tabelas quando:",
+   opts:["Ambas têm o mesmo número de linhas.","Ambas possuem a mesma estrutura de colunas (mesmo grau e domínios compatíveis).","Uma das tabelas está vazia.","Nenhuma das tabelas possui chave primária."],
+   ok:1, fixa:true,
+   why:"União exige tabelas <strong>union-compatíveis</strong>: mesmo número de colunas, com domínios correspondentes. O número de linhas não precisa ser igual, e nenhuma das outras condições é exigida pela teoria dos conjuntos aplicada aqui."},
+
+  {tipo:"mc",
+   stem:"\"Uma pessoa possui um CPF\" é o exemplo clássico, no material, de qual tipo de relacionamento?",
+   opts:["1:1 (um para um).","1:M (um para muitos).","M:N (muitos para muitos).","Nenhum, pois CPF não é um relacionamento."],
+   ok:0, fixa:true,
+   why:"Cada pessoa tem exatamente um CPF, e cada CPF pertence a exatamente uma pessoa — é o exemplo canônico de relacionamento <strong>1:1</strong> usado em aula."},
+
+  {tipo:"mc",
+   stem:"O que é Polimorfismo, em orientação a objetos?",
+   opts:["A capacidade de uma classe ter vários construtores com o mesmo nome.","A capacidade de a mesma mensagem (método) se comportar de formas diferentes dependendo do objeto que a recebe.","A conversão automática de um objeto em uma tabela relacional.","A obrigação de toda classe abstrata virar uma interface."],
+   ok:1, fixa:true,
+   why:"Polimorfismo é justamente isso: o mesmo método, chamado sobre objetos diferentes (por exemplo, de classes filhas distintas), produz comportamentos diferentes — está entre os conceitos listados na tabela de conceitos do slide, ao lado de classe, objeto e herança."},
+
+  {tipo:"mc",
+   stem:"O que caracteriza uma Interface em linguagens orientadas a objetos?",
+   opts:["Um contrato de métodos que uma classe se compromete a implementar, sem definir a implementação em si.","Um tipo de atributo que só pode ser numérico.","O mesmo que uma classe concreta, apenas com outro nome.","Um mecanismo exclusivo de bancos de dados orientados a objetos."],
+   ok:0, fixa:true,
+   why:"Interface define o \"o quê\" — as assinaturas dos métodos — deixando o \"como\" para quem implementa. É por meio de interfaces que Java contorna a ausência de herança múltipla de classes."},
+
+  {tipo:"mc",
+   stem:"O que é Encapsulamento?",
+   opts:["Herdar atributos e métodos de mais de uma classe ao mesmo tempo.","Esconder o estado interno de um objeto, expondo-o apenas por meio de seus métodos.","Transformar uma classe abstrata em concreta automaticamente.","Armazenar objetos diretamente em um banco relacional sem conversão."],
+   ok:1, fixa:true,
+   why:"Encapsulamento é a prática de proteger o estado interno do objeto, controlando o acesso a ele via métodos — é o motivo de existirem os níveis de visibilidade public/protected/private."},
+
+  {tipo:"mc",
+   stem:"Segundo o material, uma classe pode possuir:",
+   opts:["No máximo um atributo e um método.","Sub-classes.","Apenas métodos privados.","Apenas um objeto instanciado por vez."],
+   ok:1, fixa:true,
+   why:"O slide afirma explicitamente que uma classe pode possuir <strong>sub-classes</strong> — é a base da herança, e não há limite de atributos, métodos ou instâncias simultâneas."},
+
+  {tipo:"mc",
+   stem:"O que representa a 'Vinculação dinâmica de chamadas de métodos', um dos elementos-chave da orientação a objetos?",
+   opts:["A decisão de qual implementação de método executar é resolvida em tempo de compilação, nunca em tempo de execução.","A decisão de qual implementação de método executar pode ser resolvida em tempo de execução, conforme o objeto real por trás da chamada.","A obrigação de vincular cada método a exatamente uma classe, sem herança.","A conexão entre um objeto e sua tabela relacional correspondente."],
+   ok:1, fixa:true,
+   why:"Vinculação dinâmica é o que permite polimorfismo funcionar na prática: o método efetivamente chamado é decidido em <strong>tempo de execução</strong>, com base no objeto real, não apenas no tipo declarado."},
+
+  {tipo:"mc",
+   stem:"No comando <code>CREATE TABLE funcionario (id SERIAL PRIMARY KEY, nome TEXT, salario NUMERIC);</code> do exemplo em PostgreSQL, qual é o papel dessa tabela em relação a <code>funcionario_hist</code>?",
+   opts:["Ela é criada depois de funcionario_hist, como uma cópia de segurança.","Ela é a tabela base, criada antes de ativar o versionamento — funcionario_hist é gerada a partir dela pelo create_history_table.","Ela substitui completamente a necessidade de funcionario_hist.","Ela armazena apenas os funcionários demitidos."],
+   ok:1, fixa:true,
+   why:"A ordem do exemplo é: primeiro cria-se a tabela normal <code>funcionario</code>; só depois se ativa o versionamento com <code>create_history_table('funcionario', 'funcionario_hist')</code>, que passa a gerar as linhas históricas."},
+
+  {tipo:"mc",
+   stem:"Na tabela de histórico gerada pela extensão temporal_tables, quantas linhas existem para um funcionário que teve 3 salários diferentes ao longo do tempo?",
+   opts:["Sempre 1 linha, que é sobrescrita a cada alteração.","3 linhas, uma para cada período de validade de salário.","0 linhas, pois o histórico fica só em log do servidor.","Depende do número de colunas da tabela, não do número de alterações."],
+   ok:1, fixa:true,
+   why:"Cada alteração de salário gera uma <strong>nova linha</strong> na tabela de histórico, com seu próprio período de validade (val_period_start/val_period_end) — é assim que o versionamento automático preserva as versões anteriores."},
+
+  {tipo:"mc",
+   stem:"Por que a distinção entre tempo de transação e tempo de validade importa na prática — por exemplo, se um erro de digitação no salário de um funcionário só é corrigido dias depois?",
+   opts:["Porque as duas datas são sempre idênticas, então a distinção é apenas teórica.","Porque o tempo de transação registra quando o sistema foi corrigido, enquanto o tempo de validade pode apontar retroativamente para quando o salário correto passou a valer de fato.","Porque o tempo de validade nunca pode ser alterado depois de criado.","Porque só o tempo de transação é armazenado; o de validade é calculado em tempo real."],
+   ok:1, fixa:true,
+   why:"É exatamente o cenário em que bitemporal se torna útil: a correção pode ser <strong>registrada</strong> (tempo de transação) dias depois do fato, mas a <strong>validade</strong> pode apontar para a data em que o valor correto realmente passou a valer no mundo real."},
+
+  {tipo:"mc",
+   stem:"A extensão temporal_tables, usada no exemplo de versionamento automático do material, é específica de qual SGBD?",
+   opts:["Oracle.","SQL Server.","PostgreSQL.","DB2."],
+   ok:2, fixa:true,
+   why:"temporal_tables é uma extensão do <strong>PostgreSQL</strong>. Os outros SGBDs têm seus próprios recursos nativos: Oracle usa Flashback, SQL Server usa System-Versioned Tables, DB2 tem suporte bitemporal."},
+
+  {tipo:"mc",
+   stem:"Por que a 'consistência temporal' é necessária mesmo em um banco que já faz versionamento automático?",
+   opts:["Porque o versionamento automático, sozinho, não impede que dois períodos de validade do mesmo atributo se sobreponham de forma inválida.","Porque sem ela o banco perde a chave primária das tabelas.","Porque ela é o único mecanismo que permite consultas SQL comuns.","Porque ela substitui completamente a necessidade de versionamento."],
+   ok:0, fixa:true,
+   why:"Versionar automaticamente não garante, por si só, que os períodos façam sentido — por isso a consistência temporal existe como uma camada extra de integridade, garantindo, por exemplo, que não haja dois salários \"vigentes\" ao mesmo tempo para o mesmo funcionário quando isso não deveria ocorrer."}
+  );
+
   /* ---------- renderização ---------- */
   var quiz = document.getElementById("quiz");
   var LETRAS = ["A","B","C","D","E"];

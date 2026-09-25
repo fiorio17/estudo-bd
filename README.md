@@ -8,8 +8,8 @@ sem nenhuma dependência externa — abrem direto no navegador, inclusive offlin
 
 | Página | Para quê |
 |---|---|
-| [`guia.html`](guia.html) | Os três assuntos completos: modelagem relacional (Codd, chaves, dependência funcional, integridade, operadores), orientação a objetos (classe, objeto, herança, encapsulamento, bancos de dados OO) e bancos de dados temporais (tipos de tempo, versionamento, SQL temporal no PostgreSQL). Autoteste com 15 flashcards no fim. |
-| [`simulado.html`](simulado.html) | As 75 questões reais do Google Forms de revisão (25 por módulo), com correção imediata e explicação, gabarito conferido contra os slides. |
+| [`guia.html`](guia.html) | Os três assuntos completos: modelagem relacional (Codd, chaves, dependência funcional, integridade, operadores), orientação a objetos (classe, objeto, herança, encapsulamento, bancos de dados OO) e bancos de dados temporais (tipos de tempo, versionamento, SQL temporal no PostgreSQL). Autoteste com 21 flashcards no fim. |
+| [`simulado.html`](simulado.html) | As 75 questões reais do Google Forms de revisão (25 por módulo) + 18 questões extras cobrindo lacunas do Forms, com correção imediata e explicação, gabarito conferido contra os slides. |
 
 ## Sobre o simulado
 
@@ -18,6 +18,15 @@ módulo)**: Modelagem relacional, Orientação a objetos e Bancos de dados
 temporais. O simulado deste repositório usa o texto exato dessas questões,
 com o gabarito conferido pergunta a pergunta contra os três decks da
 disciplina — nenhuma inconsistência encontrada.
+
+Como a prova de verdade tem **14 questões** (bem menos que as 75 do
+formulário de revisão), ela pode explorar pontos dos slides que o Forms não
+perguntou. Por isso o simulado tem uma quarta seção, "Extras — variações
+prováveis", com 18 questões cobrindo lacunas identificadas: níveis de
+abstração ANSI, quatro regras de Codd que ficaram de fora (garantia de
+acesso, sublinguagem de dados, atualização de visualização, inclusão/
+alteração/exclusão de alto nível), polimorfismo, interfaces, encapsulamento,
+vinculação dinâmica, e detalhes do exemplo SQL de bancos temporais.
 
 ## Rodando local
 
